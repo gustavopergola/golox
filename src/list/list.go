@@ -1,8 +1,15 @@
 package list
 
 import (
+	"errors"
 	"fmt"
 )
+
+type Node struct {
+	Prev  *Node
+	Next  *Node
+	Value string
+}
 
 type List struct {
 	Length int
@@ -47,4 +54,29 @@ func (l *List) Find(value string) *Node {
 
 		node = node.Next
 	}
+}
+
+func (l *List) Delete(value string) error {
+	node := l.Find(value)
+
+	if node == nil {
+		return errors.New("Node not found!")
+	}
+
+	if node.Next != nil {
+		node.Next.Prev = node.Prev
+	}
+	if node.Prev != nil {
+		node.Prev.Next = node.Next
+	}
+
+	if node.Prev == nil {
+		l.Start = node.Next
+	}
+	if node.Next == nil {
+		l.End = node.Prev
+	}
+	l.Length--
+
+	return nil
 }
