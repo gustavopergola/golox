@@ -1,12 +1,20 @@
 package scanner
 
 import (
+	"fmt"
+
 	"github.com/gustavopergola/golox/src/token"
 )
+
+type ScannerError struct {
+	line    int
+	message string
+}
 
 type Scanner struct {
 	SourceCode string
 	tokens     []token.Token
+	Errors     []ScannerError
 	line       int
 	start      int
 	current    int
@@ -15,7 +23,7 @@ type Scanner struct {
 func (s *Scanner) ScanTokens() []token.Token {
 	s.line = 1
 
-	for _, r := range s.SourceCode {
+	for _, r := range s.SourceCode { // TODO: change this to manually control the reader
 		if s.isAtEnd() {
 			break
 		}
@@ -28,7 +36,8 @@ func (s *Scanner) ScanTokens() []token.Token {
 }
 
 func (s *Scanner) scanToken(r rune) {
-	switch token.TokenType(r) {
+	r_tt := token.TokenType(r)
+	switch r_tt {
 	case token.LEFT_PAREN_TT:
 		s.addToken(token.LEFT_PAREN_TT)
 	case token.RIGHT_PAREN_TT:
@@ -49,7 +58,13 @@ func (s *Scanner) scanToken(r rune) {
 		s.addToken(token.SEMICOLON_TT)
 	case token.STAR_TT:
 		s.addToken(token.STAR_TT)
+	default:
+		s.addError(s.line, fmt.Sprintf("Unexpected charecter %s", string(r)))
 	}
+}
+
+func (s *Scanner) addError(l int, msg string) {
+	s.Errors = append(s.Errors, ScannerError{line: l, message: msg})
 }
 
 func (s *Scanner) isAtEnd() bool {

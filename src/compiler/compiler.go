@@ -8,6 +8,10 @@ import (
 	"github.com/gustavopergola/golox/src/scanner"
 )
 
+type Compiler struct {
+	hadError bool
+}
+
 func Execute() {
 	var err error
 	args := os.Args[1:]
@@ -53,13 +57,14 @@ func runPrompt() error {
 }
 
 func run(source string) {
-	scanner.ScanFile(source)
+	s := scanner.Scanner{SourceCode: source}
+	s.ScanTokens()
 }
 
-func errorHandling(line int, msg string) {
-	report(line, "", msg)
-}
+// func errorHandling(line int, msg string) {
+// 	report(line, "", msg)
+// }
 
-func report(line int, where string, msg string) {
-	fmt.Printf("[line %d] Error %s: %s", line, where, msg)
-}
+// func report(line int, where string, msg string) {
+// 	fmt.Printf("[line %d] Error %s: %s", line, where, msg)
+// }
