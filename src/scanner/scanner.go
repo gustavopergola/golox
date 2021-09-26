@@ -116,14 +116,14 @@ func (s *Scanner) addError(l int, msg string) {
 }
 
 func (s *Scanner) addToken(tt token.TokenType) {
-	token := token.Token{
+	t := token.Token{
 		Type:         tt,
 		Lexeme:       string(tt),
 		LiteralValue: nil,
 		Line:         s.line,
 	}
 
-	s.tokens = append(s.tokens, token)
+	s.tokens = append(s.tokens, t)
 }
 
 func (s *Scanner) isAtEnd() bool {
