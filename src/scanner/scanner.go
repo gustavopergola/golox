@@ -93,7 +93,7 @@ func (s *Scanner) scanToken() {
 			ttToAdd = token.GREATER_EQUAL_TT
 		}
 	default:
-		s.addError(s.line, fmt.Sprintf("Unexpected charecter %s", string(r)))
+		s.addError(s.line, fmt.Sprintf("Unexpected character %s", string(r)))
 		hadError = true
 	}
 
