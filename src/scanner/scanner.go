@@ -92,6 +92,15 @@ func (s *Scanner) scanToken() {
 		if s.match(token.EQUAL_TT) {
 			ttToAdd = token.GREATER_EQUAL_TT
 		}
+	case token.SLASH_TT:
+		// Check for comments in line
+		if s.match(token.SLASH_TT) {
+			for s.peek() != token.NEWLINE_TT && !s.isAtEnd() {
+				s.advance()
+			}
+		} else {
+			s.addToken(token.SLASH_TT)
+		}
 	default:
 		s.addError(s.line, fmt.Sprintf("Unexpected character %s", string(r)))
 		hadError = true
@@ -102,8 +111,10 @@ func (s *Scanner) scanToken() {
 	}
 }
 
+// Checks if current rune matches expected param. Advance if it does.
+// Could be read as "conditional advance"
 func (s *Scanner) match(expected token.TokenType) bool {
-	if s.isAtEnd() || token.TokenType(s.currentRune()) != expected {
+	if lookahead := s.peek(); lookahead != expected {
 		return false
 	}
 
@@ -111,6 +122,15 @@ func (s *Scanner) match(expected token.TokenType) bool {
 	return true
 }
 
+// Look into current without advancing, return as token type for ease of use.
+func (s *Scanner) peek() token.TokenType {
+	if s.isAtEnd() {
+		return token.EOF_TT
+	}
+	return token.TokenType(s.currentRune())
+}
+
+// Simply append an Error to the scanner.
 func (s *Scanner) addError(l int, msg string) {
 	s.Errors = append(s.Errors, ScannerError{line: l, message: msg})
 }
@@ -130,6 +150,7 @@ func (s *Scanner) isAtEnd() bool {
 	return s.current >= len(s.SourceCode)
 }
 
+// Auxiliary to get current rune.
 func (s *Scanner) currentRune() rune {
 	return s.runes[s.current]
 }

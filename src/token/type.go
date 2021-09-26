@@ -14,6 +14,7 @@ const (
 	PLUS_TT        TokenType = "+"
 	SEMICOLON_TT   TokenType = ";"
 	STAR_TT        TokenType = "*"
+	SLASH_TT       TokenType = "/"
 
 	// ONE OR TWO RUNES TOKENS
 	BANG_TT          TokenType = "!"
@@ -48,6 +49,7 @@ const (
 	TRUE_TT   TokenType = "true"
 	WHILE_TT  TokenType = "while"
 
-	// EOF
-	EOF_TT TokenType = ""
+	// FILE CONTROL
+	EOF_TT     TokenType = "\\0"
+	NEWLINE_TT TokenType = "\\n"
 )
