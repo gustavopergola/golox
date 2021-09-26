@@ -61,3 +61,15 @@ func TestScanner_AddOneOrTwoRuneToken(t *testing.T) {
 	assert.Equal(t, token.GREATER_EQUAL_TT, scanner.tokens[0].Type, "greater_or_equal should have been added")
 	assert.Len(t, scanner.tokens, 2, "should have greater_or_equal and EOF")
 }
+
+func TestScanner_IgnoresComments(t *testing.T) {
+	comments := "// this is a coment!"
+	scanner := Scanner{
+		SourceCode: comments,
+	}
+	scanner.ScanTokens()
+	errors := scanner.Errors
+	assert.Len(t, errors, 0, "should not have errors")
+	assert.Len(t, scanner.tokens, 1, "should have EOF only")
+	scanner.PrintTokens()
+}

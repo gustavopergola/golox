@@ -158,3 +158,10 @@ func (s *Scanner) currentRune() rune {
 func (s *Scanner) advance() {
 	s.current += 1
 }
+
+
+func (s *Scanner) PrintTokens() {
+	for _, t := range s.tokens {
+		fmt.Println(t.ToString())
+	}
+}
