@@ -2,8 +2,9 @@ package scanner
 
 import (
 	"github.com/gustavopergola/golox/src/token"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestScanner_InvalidCharacter(t *testing.T) {

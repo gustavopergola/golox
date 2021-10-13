@@ -40,10 +40,10 @@ func (s *Scanner) ScanTokens() []token.Token {
 }
 
 func (s *Scanner) scanToken() {
-	var (
-		ttToAdd  token.TokenType
-		hadError bool
-	)
+	var hadError bool
+
+	ttToAdd := token.EOF_TT
+
 	r := s.currentRune()
 	s.advance()
 	r_tt := token.TokenType(r)
@@ -106,7 +106,7 @@ func (s *Scanner) scanToken() {
 		hadError = true
 	}
 
-	if !hadError {
+	if !hadError && ttToAdd != token.EOF_TT{
 		s.addToken(ttToAdd)
 	}
 }
@@ -158,7 +158,6 @@ func (s *Scanner) currentRune() rune {
 func (s *Scanner) advance() {
 	s.current += 1
 }
-
 
 func (s *Scanner) PrintTokens() {
 	for _, t := range s.tokens {
