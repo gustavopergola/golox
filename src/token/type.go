@@ -50,6 +50,6 @@ const (
 	WHILE_TT  TokenType = "while"
 
 	// FILE CONTROL
-	EOF_TT     TokenType = "\\0"
-	NEWLINE_TT TokenType = "\\n"
+	EOF_TT     TokenType = "\000"
+	NEWLINE_TT TokenType = "\n"
 )

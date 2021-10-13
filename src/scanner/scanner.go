@@ -101,12 +101,19 @@ func (s *Scanner) scanToken() {
 		} else {
 			s.addToken(token.SLASH_TT)
 		}
+	case " ":
+	case "\r":
+	case "\t":
+		break
+	case token.NEWLINE_TT:
+		s.line++
+		break
 	default:
 		s.addError(s.line, fmt.Sprintf("Unexpected character %s", string(r)))
 		hadError = true
 	}
 
-	if !hadError && ttToAdd != token.EOF_TT{
+	if !hadError && ttToAdd != token.EOF_TT {
 		s.addToken(ttToAdd)
 	}
 }

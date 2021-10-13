@@ -72,5 +72,27 @@ func TestScanner_IgnoresComments(t *testing.T) {
 	errors := scanner.Errors
 	assert.Len(t, errors, 0, "should not have errors")
 	assert.Len(t, scanner.tokens, 1, "should have EOF only")
-	scanner.PrintTokens()
+}
+
+func TestScanner_IgnoresMeaningless(t *testing.T) {
+	whitespace := " \t\r"
+	scanner := Scanner{
+		SourceCode: whitespace,
+	}
+	scanner.ScanTokens()
+	errors := scanner.Errors
+	assert.Len(t, errors, 0, "should not have errors")
+	assert.Len(t, scanner.tokens, 1, "should have EOF only")
+}
+
+func TestScanner_AddNewLine(t *testing.T) {
+	whitespace := "\n"
+	scanner := Scanner{
+		SourceCode: whitespace,
+	}
+	scanner.ScanTokens()
+	errors := scanner.Errors
+	assert.Len(t, errors, 0, "should not have errors")
+	assert.Len(t, scanner.tokens, 1, "should have EOF only")
+	assert.Equal(t, 2, scanner.line, "should have added new line")
 }
