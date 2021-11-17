@@ -35,7 +35,7 @@ func (s *Scanner) ScanTokens() []token.Token {
 		s.scanToken()
 	}
 
-	s.addToken(token.EOF_TT)
+	s.addToken(token.EOF_TT, nil)
 	return s.tokens
 }
 
@@ -99,12 +99,16 @@ func (s *Scanner) scanToken() {
 				s.advance()
 			}
 		} else {
-			s.addToken(token.SLASH_TT)
+			s.addToken(token.SLASH_TT, nil)
 		}
 	case " ":
+		break
 	case "\r":
+		break
 	case "\t":
 		break
+	case "\"":
+		s.scanString()
 	case token.NEWLINE_TT:
 		s.line++
 		break
@@ -114,7 +118,7 @@ func (s *Scanner) scanToken() {
 	}
 
 	if !hadError && ttToAdd != token.EOF_TT {
-		s.addToken(ttToAdd)
+		s.addToken(ttToAdd, nil)
 	}
 }
 
@@ -142,11 +146,11 @@ func (s *Scanner) addError(l int, msg string) {
 	s.Errors = append(s.Errors, ScannerError{line: l, message: msg})
 }
 
-func (s *Scanner) addToken(tt token.TokenType) {
+func (s *Scanner) addToken(tt token.TokenType, value interface{}) {
 	t := token.Token{
 		Type:         tt,
 		Lexeme:       string(tt),
-		LiteralValue: nil,
+		LiteralValue: value,
 		Line:         s.line,
 	}
 
@@ -164,6 +168,27 @@ func (s *Scanner) currentRune() rune {
 
 func (s *Scanner) advance() {
 	s.current += 1
+}
+
+
+func (s *Scanner) scanString() {
+	current := s.peek()
+	for current != "\"" && s.isAtEnd() {
+		if current == token.NEWLINE_TT {
+			s.line++
+		}
+		s.advance()
+	}
+
+	if s.isAtEnd() {
+		s.addError(s.line, "unterminated string.")
+	}
+
+	//terminating \"
+	s.advance()
+
+	value := s.SourceCode[s.start + 1:s.current - 1]
+	s.addToken(token.STRING_TT, value)
 }
 
 func (s *Scanner) PrintTokens() {
