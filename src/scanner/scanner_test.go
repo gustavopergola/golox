@@ -53,6 +53,11 @@ func TestScanner_ScanEmptyString(t *testing.T) {
 	assert.Equal(t, s.tokens[0].LiteralValue, "")
 }
 
+func TestScanner_ScanNumber(t *testing.T) {
+	s := scannerAsserts(t, "123.123", 2, 1)
+	assert.Equal(t, s.tokens[0].LiteralValue, 123.123)
+}
+
 func TestScanner_InvalidCharacter(t *testing.T) {
 	invalidCharacter := "@"
 	scanner := Scanner{

@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gustavopergola/golox/src/token"
 )
@@ -113,6 +114,10 @@ func (s *Scanner) scanToken() {
 		s.line++
 		break
 	default:
+		if s.isDigit(r_tt) {
+			s.scanNumber()
+			break
+		}
 		s.addError(s.line, fmt.Sprintf("unexpected character: \"%s\";", string(r)))
 		hadError = true
 	}
@@ -139,6 +144,14 @@ func (s *Scanner) peek() token.TokenType {
 		return token.EOF_TT
 	}
 	return token.TokenType(s.currentRune())
+}
+
+// peek next rune without advancing
+func (s *Scanner) peekNext() token.TokenType {
+	s.current++
+	result := s.peek()
+	s.current--
+	return result
 }
 
 // Simply append an Error to the scanner.
@@ -192,6 +205,32 @@ func (s *Scanner) scanString() {
 
 	value := s.SourceCode[s.start + 1:s.current - 1]
 	s.addToken(token.STRING_TT, value)
+}
+
+func (s *Scanner) isDigit(tt token.TokenType) bool {
+	_, err := strconv.Atoi(string(tt))
+	return err == nil
+}
+
+func (s *Scanner) scanNumber() {
+	for s.isDigit(s.peek()) {
+		s.advance()
+	}
+
+	if s.peek() == "." && s.isDigit(s.peekNext()) {
+		s.advance()
+
+		for s.isDigit(s.peek()) {
+			s.advance()
+		}
+	}
+
+	value := s.SourceCode[s.start:s.current]
+	parsedValue, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		s.addError(s.line, "could not parse float")
+	}
+	s.addToken(token.NUMBER_TT, parsedValue)
 }
 
 func (s *Scanner) PrintTokens() {
