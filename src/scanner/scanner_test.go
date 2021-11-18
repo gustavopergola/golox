@@ -96,3 +96,29 @@ func TestScanner_AddNewLine(t *testing.T) {
 	assert.Len(t, scanner.tokens, 1, "should have EOF only")
 	assert.Equal(t, 2, scanner.line, "should have added new line")
 }
+
+func TestScanner_ScanString(t *testing.T) {
+	stringCode := "\"foobar\n\""
+	scanner := Scanner{
+		SourceCode: stringCode,
+	}
+	scanner.ScanTokens()
+	errors := scanner.Errors
+	assert.Len(t, errors, 0, "should not have errors")
+	assert.Len(t, scanner.tokens, 2, "should have string + EOF")
+	assert.Equal(t, scanner.tokens[0].LiteralValue, "foobar\n")
+	assert.Equal(t, 2, scanner.line, "should have added new line")
+}
+
+func TestScanner_ScanEmptyString(t *testing.T) {
+	stringCode := "\"\""
+	scanner := Scanner{
+		SourceCode: stringCode,
+	}
+	scanner.ScanTokens()
+	errors := scanner.Errors
+	assert.Len(t, errors, 0, "should not have errors")
+	assert.Len(t, scanner.tokens, 2, "should have string + EOF")
+	assert.Equal(t, scanner.tokens[0].LiteralValue, "")
+	assert.Equal(t, 1, scanner.line, "should not have added new line")
+}

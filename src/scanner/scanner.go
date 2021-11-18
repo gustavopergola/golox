@@ -113,7 +113,7 @@ func (s *Scanner) scanToken() {
 		s.line++
 		break
 	default:
-		s.addError(s.line, fmt.Sprintf("Unexpected character %s", string(r)))
+		s.addError(s.line, fmt.Sprintf("unexpected character: \"%s\";", string(r)))
 		hadError = true
 	}
 
@@ -172,8 +172,11 @@ func (s *Scanner) advance() {
 
 
 func (s *Scanner) scanString() {
-	current := s.peek()
-	for current != "\"" && s.isAtEnd() {
+	for {
+		current := s.peek()
+		if current == "\"" || s.isAtEnd() {
+			break
+		}
 		if current == token.NEWLINE_TT {
 			s.line++
 		}
