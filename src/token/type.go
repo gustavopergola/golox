@@ -27,7 +27,7 @@ const (
 	LESS_EQUAL_TT    TokenType = "<="
 
 	// LITERALS
-	IDENTIFIER_TT TokenType = "" // regex maybe?
+	IDENTIFIER_TT TokenType = ""
 	STRING_TT     TokenType = ""
 	NUMBER_TT     TokenType = ""
 
@@ -53,3 +53,22 @@ const (
 	EOF_TT     TokenType = "\000"
 	NEWLINE_TT TokenType = "\n"
 )
+
+var ReservedWords = map[string]TokenType{
+	"var":    VAR_TT,
+	"fun":    FUN_TT,
+	"and":    AND_TT,
+	"class":  CLASS_TT,
+	"else":   ELSE_TT,
+	"false":  FALSE_TT,
+	"for":    FOR_TT,
+	"if":     IF_TT,
+	"nil":    NIL_TT,
+	"or":     OR_TT,
+	"print":  PRINT_TT,
+	"return": RETURN_TT,
+	"super":  SUPER_TT,
+	"this":   THIS_TT,
+	"true":   TRUE_TT,
+	"while":  WHILE_TT,
+}

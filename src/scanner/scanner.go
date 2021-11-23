@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 
 	"github.com/gustavopergola/golox/src/token"
@@ -118,6 +119,11 @@ func (s *Scanner) scanToken() {
 			s.scanNumber()
 			break
 		}
+		if s.isAlpha(r_tt) {
+			s.scanAlpha()
+			break
+		}
+
 		s.addError(s.line, fmt.Sprintf("unexpected character: \"%s\";", string(r)))
 		hadError = true
 	}
@@ -212,6 +218,11 @@ func (s *Scanner) isDigit(tt token.TokenType) bool {
 	return err == nil
 }
 
+func (s *Scanner) isAlpha(tt token.TokenType) bool {
+	match, _ := regexp.MatchString("([a-zA-Z_]+)", string(tt))
+	return match
+}
+
 func (s *Scanner) scanNumber() {
 	for s.isDigit(s.peek()) {
 		s.advance()
@@ -231,6 +242,22 @@ func (s *Scanner) scanNumber() {
 		s.addError(s.line, "could not parse float")
 	}
 	s.addToken(token.NUMBER_TT, parsedValue)
+}
+
+func (s *Scanner) scanAlpha() {
+	for s.isAlpha(s.peek()) {
+		if !s.isAlpha(s.peekNext()) || s.isAtEnd() {
+			break
+		}
+		s.advance()
+	}
+
+	value := s.SourceCode[s.start:s.current]
+	_type, ok :=  token.ReservedWords[value]
+	if !ok {
+		_type = token.IDENTIFIER_TT
+	}
+	s.addToken(_type, value)
 }
 
 func (s *Scanner) PrintTokens() {
