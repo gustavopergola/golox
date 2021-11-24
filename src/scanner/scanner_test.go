@@ -61,6 +61,13 @@ func TestScanner_ScanNumber(t *testing.T) {
 func TestScanner_ScanIdentifier(t *testing.T) {
 	s := scannerAsserts(t, "foobar", 2, 1)
 	assert.Equal(t, s.tokens[0].LiteralValue, "foobar")
+	assert.Equal(t, token.IDENTIFIER_TT, s.tokens[0].Type, "expected identifier token type")
+}
+
+func TestScanner_ScanMaxMunch(t *testing.T) {
+	s := scannerAsserts(t, "var_", 2, 1)
+	assert.Equal(t, s.tokens[0].LiteralValue, "var_")
+	assert.Equal(t, token.IDENTIFIER_TT, s.tokens[0].Type, "expected identifier token type")
 }
 
 func TestScanner_ScanVar(t *testing.T) {
