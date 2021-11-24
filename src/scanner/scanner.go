@@ -246,9 +246,6 @@ func (s *Scanner) scanNumber() {
 
 func (s *Scanner) scanAlpha() {
 	for s.isAlpha(s.peek()) {
-		if !s.isAlpha(s.peekNext()) || s.isAtEnd() {
-			break
-		}
 		s.advance()
 	}
 

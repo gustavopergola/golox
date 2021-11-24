@@ -58,6 +58,17 @@ func TestScanner_ScanNumber(t *testing.T) {
 	assert.Equal(t, s.tokens[0].LiteralValue, 123.123)
 }
 
+func TestScanner_ScanIdentifier(t *testing.T) {
+	s := scannerAsserts(t, "foobar", 2, 1)
+	assert.Equal(t, s.tokens[0].LiteralValue, "foobar")
+}
+
+func TestScanner_ScanVar(t *testing.T) {
+	s := scannerAsserts(t, "var", 2, 1)
+	assert.Equal(t, s.tokens[0].LiteralValue, "var")
+	assert.Equal(t, token.VAR_TT, s.tokens[0].Type, "expected var token type")
+}
+
 func TestScanner_InvalidCharacter(t *testing.T) {
 	invalidCharacter := "@"
 	scanner := Scanner{
